@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,6 +38,30 @@ func GetProdutos(db *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, produtos)
+	}
+}
+
+func GetProdutoByID(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+			return
+		}
+
+		var produto Produto
+		err = db.QueryRow("SELECT id, nome FROM produtos WHERE id = $1", id).Scan(&produto.ID, &produto.Nome)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query database"})
+			}
+			return
+		}
+
+		c.JSON(http.StatusOK, produto)
 	}
 }
 
@@ -77,5 +102,29 @@ func CreateProduto(db *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusCreated, gin.H{"message": "Produto criado com sucesso", "produto": produto})
+	}
+}
+
+func DeleteProdutoByID(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+			return
+		}
+
+		var produto Produto
+		err = db.QueryRow("DELETE FROM produtos WHERE id = $1 RETURNING id, nome", id).Scan(&produto.ID, &produto.Nome)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete product"})
+			}
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Product deleted successfully", "produto": produto})
 	}
 }

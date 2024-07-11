@@ -38,7 +38,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	// Rotas da API
 	router.GET("/produtos", handlers.GetProdutos(db))
+	router.GET("/produtos/:id", handlers.GetProdutoByID(db))
 	router.POST("/produtos", handlers.CreateProduto(db))
+	router.DELETE("/produtos/:id", handlers.DeleteProdutoByID(db))
 
 	return router
 }
