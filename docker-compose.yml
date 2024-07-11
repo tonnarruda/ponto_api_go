@@ -4,7 +4,7 @@ services:
     image: postgres:14.0
     environment:
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: produtos_db
+      POSTGRES_DB: ponto3_db
     ports:
       - "5432:5432"
 
