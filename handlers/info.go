@@ -5,17 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tonnarruda/products_go/models"
 )
-
-type Info struct {
-	VersaoBD       int    `json:"versao_bd"`
-	StatusBD       string `json:"status_bd"`
-	Sistema        string `json:"sistema"`
-	VersaoBDBeta   int    `json:"versao_bd_beta"`
-	Atualizando    int    `json:"atualizando"`
-	Fortes         int    `json:"fortes"`
-	ConvertePonto3 int    `json:"converte_ponto3"`
-}
 
 func GetInfo(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -29,7 +20,7 @@ func GetInfo(db *sql.DB) gin.HandlerFunc {
 		}
 		defer rows.Close()
 
-		var info Info
+		var info models.Info
 		for rows.Next() {
 			if err := rows.Scan(&info.VersaoBD, &info.StatusBD, &info.Sistema, &info.VersaoBDBeta, &info.Atualizando, &info.Fortes, &info.ConvertePonto3); err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan INFO"})
