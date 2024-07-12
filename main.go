@@ -38,8 +38,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	// Rotas da API
 	router.GET("/info", handlers.GetInfo(db))
-	router.GET("/empresas", handlers.GetEmp(db))
-	router.POST("/empresa", handlers.CreateEmp(db))
+	router.GET("/empresas", handlers.GetEmpresa(db))
+	router.GET("/empresa/:codigo", handlers.GetEmpresaByCodigo(db))
+	router.POST("/empresa", handlers.PostEmpresa(db))
 
 	return router
 }
