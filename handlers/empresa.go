@@ -24,7 +24,10 @@ func (h *CompanyHandler) CreateCompanyHandler(c *gin.Context) {
 	}
 
 	if err := h.companyService.CreateCompany(&newCompany); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create company"})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Failed to create company",
+			"details": err.Error(),
+		})
 		return
 	}
 
