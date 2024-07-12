@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"os"
 
-	_ "github.com/lib/pq" // Driver PostgreSQL
+	_ "github.com/lib/pq"
 )
 
 // SetupDatabase configura a conexão com o banco de dados
