@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/tonnarruda/products_go/models"
-	"github.com/tonnarruda/products_go/repositories"
+	"github.com/tonnarruda/ponto_api_go/models"
+	"github.com/tonnarruda/ponto_api_go/repositories"
 )
 
 type CompanyService struct {

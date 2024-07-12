@@ -5,11 +5,11 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tonnarruda/products_go/config"
-	"github.com/tonnarruda/products_go/db"
-	"github.com/tonnarruda/products_go/handlers"
-	"github.com/tonnarruda/products_go/repositories"
-	"github.com/tonnarruda/products_go/services"
+	"github.com/tonnarruda/ponto_api_go/config"
+	"github.com/tonnarruda/ponto_api_go/db"
+	"github.com/tonnarruda/ponto_api_go/handlers"
+	"github.com/tonnarruda/ponto_api_go/repositories"
+	"github.com/tonnarruda/ponto_api_go/services"
 )
 
 func main() {

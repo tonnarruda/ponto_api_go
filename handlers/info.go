@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tonnarruda/products_go/models"
+	"github.com/tonnarruda/ponto_api_go/models"
 )
 
 func GetInfo(db *sql.DB) gin.HandlerFunc {

@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tonnarruda/products_go/models"
-	"github.com/tonnarruda/products_go/services"
+	"github.com/tonnarruda/ponto_api_go/models"
+	"github.com/tonnarruda/ponto_api_go/services"
 )
 
 type CompanyHandler struct {

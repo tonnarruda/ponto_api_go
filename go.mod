@@ -1,4 +1,4 @@
-module github.com/tonnarruda/products_go
+module github.com/tonnarruda/ponto_api_go
 
 go 1.22.4
 
