@@ -34,6 +34,31 @@ func (h *CompanyHandler) CreateCompanyHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Company created successfully"})
 }
 
+func (h *CompanyHandler) UpdateCompany(c *gin.Context) {
+	codigo := c.Query("codigo")
+
+	if codigo == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "codigo is required"})
+		return
+	}
+
+	var updatedCompany models.Empresa
+	if err := c.ShouldBindJSON(&updatedCompany); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.companyService.UpdateCompany(codigo, &updatedCompany); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Failed to update company",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Empresa atualizada com sucesso."})
+}
+
 func (h *CompanyHandler) GetAllCompaniesHandler(c *gin.Context) {
 	companies, err := h.companyService.GetAllCompanies()
 	if err != nil {

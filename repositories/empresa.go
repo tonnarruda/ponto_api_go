@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 
 	"github.com/tonnarruda/ponto_api_go/models"
@@ -33,7 +34,30 @@ func (r *CompanyRepository) Create(company *models.Empresa) error {
 		company.CPF, company.DataEncerramento, company.UltimaAtualizacaoAC, company.FaltaAjustarNoAC, company.AderiuESocial, company.DataAdesaoESocial,
 		company.DataAdesaoESocialF2, company.TpAmbESocial, company.StatusEnvioApp, company.NomeFantasia, company.CNPJLicenciado, company.FreemiumLastUpdate)
 	if err != nil {
-		log.Printf("Failed to insert user into database: %v", err)
+		log.Printf("Failed to insert company into database: %v", err)
+		return err
+	}
+	return nil
+}
+
+func (r *CompanyRepository) UpdateByCodigo(codigo string, company *models.Empresa) error {
+	if codigo == "" {
+		return errors.New("codigo is required")
+	}
+	query := `
+		UPDATE EMPRESA SET 
+			Nome = $1, RazaoSocial = $2, CNPJBase = $3, USU_CODIGO = $4,
+			CONVERTETIPOHE = $5, CPF = $6, DTENCERRAMENTO = $7, Ultima_Atualizacao_AC = $8,
+			Falta_Ajustar_No_AC = $9, ADERIU_ESOCIAL = $10, DATA_ADESAO_ESOCIAL = $11,
+			DATA_ADESAO_ESOCIAL_F2 = $12, TP_AMB_ESOCIAL = $13, STATUSENVIOAPP = $14,
+			NMFANTASIA = $15, CNPJLICENCIADO = $16, Freemium_Last_Update = $17
+		WHERE Codigo = $18
+	`
+	_, err := r.db.Exec(query, company.Nome, company.RazaoSocial, company.CNPJBase, company.USUCodigo, company.ConvertTipoHe,
+		company.CPF, company.DataEncerramento, company.UltimaAtualizacaoAC, company.FaltaAjustarNoAC, company.AderiuESocial, company.DataAdesaoESocial,
+		company.DataAdesaoESocialF2, company.TpAmbESocial, company.StatusEnvioApp, company.NomeFantasia, company.CNPJLicenciado, company.FreemiumLastUpdate, codigo)
+	if err != nil {
+		log.Printf("Failed to update company in database: %v", err)
 		return err
 	}
 	return nil

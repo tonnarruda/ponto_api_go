@@ -41,6 +41,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	// Rotas da API
 	router.POST("/empresa", companyHandler.CreateCompanyHandler)
+
+	router.PUT("/empresa", companyHandler.UpdateCompany)
+
 	router.GET("/empresas", companyHandler.GetAllCompaniesHandler)
 	router.GET("/empresa/:codigo", companyHandler.GetCompanyByCodigoHandler)
 	router.DELETE("/empresa/:codigo", companyHandler.DeleteCompanyByCodigoHandler)
