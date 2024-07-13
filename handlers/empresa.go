@@ -35,10 +35,10 @@ func (h *CompanyHandler) CreateCompanyHandler(c *gin.Context) {
 }
 
 func (h *CompanyHandler) UpdateCompany(c *gin.Context) {
-	codigo := c.Query("codigo")
+	code := c.Query("codigo")
 
-	if codigo == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "codigo is required"})
+	if code == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "code is required"})
 		return
 	}
 
@@ -48,7 +48,7 @@ func (h *CompanyHandler) UpdateCompany(c *gin.Context) {
 		return
 	}
 
-	if err := h.companyService.UpdateCompany(codigo, &updatedCompany); err != nil {
+	if err := h.companyService.UpdateCompany(code, &updatedCompany); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   "Failed to update company",
 			"details": err.Error(),
@@ -56,7 +56,7 @@ func (h *CompanyHandler) UpdateCompany(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Empresa atualizada com sucesso."})
+	c.JSON(http.StatusOK, gin.H{"message": "Company updated successfully."})
 }
 
 func (h *CompanyHandler) GetAllCompaniesHandler(c *gin.Context) {
@@ -70,8 +70,8 @@ func (h *CompanyHandler) GetAllCompaniesHandler(c *gin.Context) {
 }
 
 func (h *CompanyHandler) GetCompanyByCodigoHandler(c *gin.Context) {
-	codigo := c.Param("codigo")
-	company, err := h.companyService.GetCompanyByCodigo(codigo)
+	code := c.Param("codigo")
+	company, err := h.companyService.GetCompanyByCodigo(code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch company"})
 		return
@@ -86,9 +86,9 @@ func (h *CompanyHandler) GetCompanyByCodigoHandler(c *gin.Context) {
 
 func (h *CompanyHandler) DeleteCompanyByCodigoHandler(c *gin.Context) {
 
-	codigo := c.Param("codigo")
+	code := c.Param("codigo")
 
-	err := h.companyService.DeleteCompanyByCodigo(codigo)
+	err := h.companyService.DeleteCompanyByCodigo(code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete company"})
 		return
