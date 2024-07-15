@@ -3,8 +3,10 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tonnarruda/ponto_api_go/helper"
 	"github.com/tonnarruda/ponto_api_go/models"
 	"github.com/tonnarruda/ponto_api_go/services"
 )
@@ -24,9 +26,20 @@ func (h *CompanyHandler) CreateCompanyHandler(c *gin.Context) {
 		return
 	}
 
-	if newCompany.Codigo == "" || newCompany.Nome == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "The fields 'codigo' and 'nome' are required. Please ensure both are provided."})
+	if newCompany.Nome == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "The field 'nome' is required. Please ensure it is provided."})
 		return
+	}
+
+	// Verifica se o código foi fornecido; se não, gera automaticamente
+	if newCompany.Codigo == "" {
+		lastCode, _ := h.companyService.GetLastCompanyCode()
+
+		if lastCode == "" || strings.Contains(lastCode, "sql: no rows in result set") {
+			newCompany.Codigo = "0001"
+		} else {
+			newCompany.Codigo = helper.GenerateNextCode(lastCode)
+		}
 	}
 
 	if err := h.companyService.CreateCompany(&newCompany); err != nil {

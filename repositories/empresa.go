@@ -128,3 +128,13 @@ func (r *CompanyRepository) DeleteByCodigo(codigo string, company *models.Empres
 
 	return nil
 }
+
+func (r *CompanyRepository) GetLastCompanyCode() (string, error) {
+	var lastCode string
+	query := `SELECT codigo FROM empresa ORDER BY codigo DESC LIMIT 1`
+	err := r.db.QueryRow(query).Scan(&lastCode)
+	if err != nil {
+		return "", err
+	}
+	return lastCode, nil
+}

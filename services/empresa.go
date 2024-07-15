@@ -36,3 +36,7 @@ func (s *CompanyService) DeleteCompanyByCodigo(codigo string, company *models.Em
 func (s *CompanyService) UpdateCompany(codigo string, company *models.Empresa) error {
 	return s.companyRepository.UpdateByCodigo(codigo, company)
 }
+
+func (s *CompanyService) GetLastCompanyCode() (string, error) {
+	return s.companyRepository.GetLastCompanyCode()
+}
