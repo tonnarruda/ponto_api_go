@@ -26,6 +26,7 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	routes.SetupCompanyRoutes(router, database)
+	routes.SetupInfoRoutes(router, database)
 
 	log.Fatal(router.Run(":8080"))
 }

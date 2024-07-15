@@ -1,38 +1,26 @@
 package handlers
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tonnarruda/ponto_api_go/models"
+	"github.com/tonnarruda/ponto_api_go/services"
 )
 
-func GetInfo(db *sql.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		rows, err := db.Query(`
-			SELECT VERSAOBD, STATUSBD, SISTEMA, VERSAOBDBETA, ATUALIZANDO, FORTES, CONVERTEPONTO3
-			FROM INFO
-		`)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query database"})
-			return
-		}
-		defer rows.Close()
+type InfoHandler struct {
+	infoService *services.InfoService
+}
 
-		var info models.Info
-		for rows.Next() {
-			if err := rows.Scan(&info.VersaoBD, &info.StatusBD, &info.Sistema, &info.VersaoBDBeta, &info.Atualizando, &info.Fortes, &info.ConvertePonto3); err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan INFO"})
-				return
-			}
-		}
+func NewInfoHandler(infoService *services.InfoService) *InfoHandler {
+	return &InfoHandler{infoService: infoService}
+}
 
-		if err = rows.Err(); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error occurred during iteration"})
-			return
-		}
-
-		c.JSON(http.StatusOK, info)
+func (h *InfoHandler) GetAllInfoHandler(c *gin.Context) {
+	infos, err := h.infoService.GetAllInfo()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch companies"})
+		return
 	}
+
+	c.JSON(http.StatusOK, infos)
 }
