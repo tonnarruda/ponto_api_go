@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/tonnarruda/ponto_api_go/helper"
-	"github.com/tonnarruda/ponto_api_go/models"
 	"github.com/tonnarruda/ponto_api_go/services"
+	"github.com/tonnarruda/ponto_api_go/structs"
 )
 
 type CompanyHandler struct {
@@ -20,7 +20,7 @@ func NewCompanyHandler(companyService *services.CompanyService) *CompanyHandler 
 }
 
 func (h *CompanyHandler) CreateCompanyHandler(c *gin.Context) {
-	var newCompany models.Empresa
+	var newCompany structs.Empresa
 	if err := c.ShouldBindJSON(&newCompany); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -61,7 +61,7 @@ func (h *CompanyHandler) UpdateCompany(c *gin.Context) {
 		return
 	}
 
-	var updatedCompany models.Empresa
+	var updatedCompany structs.Empresa
 	if err := c.ShouldBindJSON(&updatedCompany); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -111,7 +111,7 @@ func (h *CompanyHandler) DeleteCompanyByCodigoHandler(c *gin.Context) {
 		return
 	}
 
-	var deletedCompany models.Empresa
+	var deletedCompany structs.Empresa
 	err := h.companyService.DeleteCompanyByCodigo(code, &deletedCompany)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -123,4 +123,19 @@ func (h *CompanyHandler) DeleteCompanyByCodigoHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
+}
+
+func (h *CompanyHandler) DeleteAllHandler(c *gin.Context) {
+
+	err := h.companyService.DeleteAllCompanies()
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Company not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete company", "details": err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "All Companies were deleted successfully"})
 }

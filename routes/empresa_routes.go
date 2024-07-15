@@ -21,5 +21,6 @@ func SetupCompanyRoutes(router *gin.Engine, db *sql.DB) {
 		companyRouter.GET("", companyHandler.GetAllCompaniesHandler)
 		companyRouter.GET("/:codigo", companyHandler.GetCompanyByCodigoHandler)
 		companyRouter.DELETE("", companyHandler.DeleteCompanyByCodigoHandler)
+		companyRouter.DELETE("/all", companyHandler.DeleteAllHandler)
 	}
 }

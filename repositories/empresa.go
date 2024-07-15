@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/tonnarruda/ponto_api_go/models"
+	"github.com/tonnarruda/ponto_api_go/structs"
 )
 
 type CompanyRepository struct {
@@ -16,7 +16,7 @@ func NewCompanyRepository(db *sql.DB) *CompanyRepository {
 	return &CompanyRepository{db: db}
 }
 
-func (r *CompanyRepository) Create(company *models.Empresa) error {
+func (r *CompanyRepository) Create(company *structs.Empresa) error {
 	query := `
 		INSERT INTO EMPRESA (
 			Codigo, Nome, RazaoSocial, CNPJBase, USU_CODIGO,
@@ -40,7 +40,7 @@ func (r *CompanyRepository) Create(company *models.Empresa) error {
 	return nil
 }
 
-func (r *CompanyRepository) UpdateByCodigo(codigo string, company *models.Empresa) error {
+func (r *CompanyRepository) UpdateByCodigo(codigo string, company *structs.Empresa) error {
 	if codigo == "" {
 		return errors.New("codigo is required")
 	}
@@ -63,7 +63,7 @@ func (r *CompanyRepository) UpdateByCodigo(codigo string, company *models.Empres
 	return nil
 }
 
-func (r *CompanyRepository) GetAll() ([]models.Empresa, error) {
+func (r *CompanyRepository) GetAll() ([]structs.Empresa, error) {
 	query := `SELECT id, Codigo, Nome, RazaoSocial, CNPJBase, USU_CODIGO,
 				   CONVERTETIPOHE, CPF, DTENCERRAMENTO, Ultima_Atualizacao_AC,
 				   Falta_Ajustar_No_AC, ADERIU_ESOCIAL, DATA_ADESAO_ESOCIAL,
@@ -77,9 +77,9 @@ func (r *CompanyRepository) GetAll() ([]models.Empresa, error) {
 	}
 	defer rows.Close()
 
-	var companies []models.Empresa
+	var companies []structs.Empresa
 	for rows.Next() {
-		var company models.Empresa
+		var company structs.Empresa
 		err := rows.Scan(&company.ID, &company.Codigo, &company.Nome, &company.RazaoSocial, &company.CNPJBase, &company.USUCodigo, &company.ConvertTipoHe,
 			&company.CPF, &company.DataEncerramento, &company.UltimaAtualizacaoAC, &company.FaltaAjustarNoAC, &company.AderiuESocial, &company.DataAdesaoESocial,
 			&company.DataAdesaoESocialF2, &company.TpAmbESocial, &company.StatusEnvioApp, &company.NomeFantasia, &company.CNPJLicenciado, &company.FreemiumLastUpdate)
@@ -93,7 +93,7 @@ func (r *CompanyRepository) GetAll() ([]models.Empresa, error) {
 	return companies, nil
 }
 
-func (r *CompanyRepository) GetByCodigo(codigo string) (*models.Empresa, error) {
+func (r *CompanyRepository) GetByCodigo(codigo string) (*structs.Empresa, error) {
 	query := `SELECT id, codigo, Nome, RazaoSocial, CNPJBase, USU_CODIGO,
 				   CONVERTETIPOHE, CPF, DTENCERRAMENTO, Ultima_Atualizacao_AC,
 				   Falta_Ajustar_No_AC, ADERIU_ESOCIAL, DATA_ADESAO_ESOCIAL,
@@ -103,7 +103,7 @@ func (r *CompanyRepository) GetByCodigo(codigo string) (*models.Empresa, error) 
 			WHERE codigo = $1`
 	row := r.db.QueryRow(query, codigo)
 
-	var company models.Empresa
+	var company structs.Empresa
 	err := row.Scan(&company.ID, &company.Codigo, &company.Nome, &company.RazaoSocial, &company.CNPJBase, &company.USUCodigo, &company.ConvertTipoHe,
 		&company.CPF, &company.DataEncerramento, &company.UltimaAtualizacaoAC, &company.FaltaAjustarNoAC, &company.AderiuESocial, &company.DataAdesaoESocial,
 		&company.DataAdesaoESocialF2, &company.TpAmbESocial, &company.StatusEnvioApp, &company.NomeFantasia, &company.CNPJLicenciado, &company.FreemiumLastUpdate)
@@ -118,11 +118,22 @@ func (r *CompanyRepository) GetByCodigo(codigo string) (*models.Empresa, error) 
 	return &company, nil
 }
 
-func (r *CompanyRepository) DeleteByCodigo(codigo string, company *models.Empresa) error {
+func (r *CompanyRepository) DeleteByCodigo(codigo string, company *structs.Empresa) error {
 	query := `DELETE FROM EMPRESA WHERE Codigo = $1`
 	_, err := r.db.Exec(query, codigo)
 	if err != nil {
 		log.Printf("Failed to delete company by code: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func (r *CompanyRepository) DeleteAll() error {
+	query := `DELETE FROM EMPRESA`
+	_, err := r.db.Exec(query)
+	if err != nil {
+		log.Println("Failed to delete company", err)
 		return err
 	}
 

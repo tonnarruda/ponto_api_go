@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/tonnarruda/ponto_api_go/models"
+	"github.com/tonnarruda/ponto_api_go/structs"
 )
 
 type InfoRepository struct {
@@ -15,7 +15,7 @@ func NewInfoRepository(db *sql.DB) *InfoRepository {
 	return &InfoRepository{db: db}
 }
 
-func (r *InfoRepository) GetAll() ([]models.Info, error) {
+func (r *InfoRepository) GetAll() ([]structs.Info, error) {
 	query := `SELECT versaobd, statusbd, sistema, versaobdbeta, atualizando, fortes, converteponto3
 			FROM INFO`
 	rows, err := r.db.Query(query)
@@ -25,9 +25,9 @@ func (r *InfoRepository) GetAll() ([]models.Info, error) {
 	}
 	defer rows.Close()
 
-	var infos []models.Info
+	var infos []structs.Info
 	for rows.Next() {
-		var info models.Info
+		var info structs.Info
 		err := rows.Scan(&info.VersaoBD, &info.StatusBD, &info.Sistema,
 			&info.VersaoBDBeta, &info.Atualizando, &info.Fortes, &info.ConvertePonto3)
 		if err != nil {

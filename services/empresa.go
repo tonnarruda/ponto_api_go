@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/tonnarruda/ponto_api_go/models"
 	"github.com/tonnarruda/ponto_api_go/repositories"
+	"github.com/tonnarruda/ponto_api_go/structs"
 )
 
 type CompanyService struct {
@@ -13,7 +13,7 @@ func NewCompanyService(companyRepo *repositories.CompanyRepository) *CompanyServ
 	return &CompanyService{companyRepository: companyRepo}
 }
 
-func (s *CompanyService) CreateCompany(company *models.Empresa) error {
+func (s *CompanyService) CreateCompany(company *structs.Empresa) error {
 	err := s.companyRepository.Create(company)
 	if err != nil {
 		return err
@@ -22,18 +22,23 @@ func (s *CompanyService) CreateCompany(company *models.Empresa) error {
 	return nil
 }
 
-func (s *CompanyService) GetAllCompanies() ([]models.Empresa, error) {
+func (s *CompanyService) GetAllCompanies() ([]structs.Empresa, error) {
 	return s.companyRepository.GetAll()
 }
 
-func (s *CompanyService) GetCompanyByCodigo(codigo string) (*models.Empresa, error) {
+func (s *CompanyService) GetCompanyByCodigo(codigo string) (*structs.Empresa, error) {
 	return s.companyRepository.GetByCodigo(codigo)
 }
 
-func (s *CompanyService) DeleteCompanyByCodigo(codigo string, company *models.Empresa) error {
+func (s *CompanyService) DeleteCompanyByCodigo(codigo string, company *structs.Empresa) error {
 	return s.companyRepository.DeleteByCodigo(codigo, company)
 }
-func (s *CompanyService) UpdateCompany(codigo string, company *models.Empresa) error {
+
+func (s *CompanyService) DeleteAllCompanies() error {
+	return s.companyRepository.DeleteAll()
+}
+
+func (s *CompanyService) UpdateCompany(codigo string, company *structs.Empresa) error {
 	return s.companyRepository.UpdateByCodigo(codigo, company)
 }
 

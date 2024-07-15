@@ -1,4 +1,4 @@
-package models
+package structs
 
 type Info struct {
 	VersaoBD       int    `json:"versao_bd"`
