@@ -118,7 +118,7 @@ func (r *CompanyRepository) GetByCodigo(codigo string) (*models.Empresa, error) 
 	return &company, nil
 }
 
-func (r *CompanyRepository) DeleteByCodigo(codigo string) error {
+func (r *CompanyRepository) DeleteByCodigo(codigo string, company *models.Empresa) error {
 	query := `DELETE FROM EMPRESA WHERE Codigo = $1`
 	_, err := r.db.Exec(query, codigo)
 	if err != nil {

@@ -46,7 +46,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	router.GET("/empresas", companyHandler.GetAllCompaniesHandler)
 	router.GET("/empresa/:codigo", companyHandler.GetCompanyByCodigoHandler)
-	router.DELETE("/empresa/:codigo", companyHandler.DeleteCompanyByCodigoHandler)
+	router.DELETE("/empresa", companyHandler.DeleteCompanyByCodigoHandler)
 
 	return router
 }

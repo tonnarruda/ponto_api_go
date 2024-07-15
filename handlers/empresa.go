@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,11 @@ func (h *CompanyHandler) CreateCompanyHandler(c *gin.Context) {
 	var newCompany models.Empresa
 	if err := c.ShouldBindJSON(&newCompany); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if newCompany.Codigo == "" || newCompany.Nome == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "The fields 'codigo' and 'nome' are required. Please ensure both are provided."})
 		return
 	}
 
@@ -85,12 +91,21 @@ func (h *CompanyHandler) GetCompanyByCodigoHandler(c *gin.Context) {
 }
 
 func (h *CompanyHandler) DeleteCompanyByCodigoHandler(c *gin.Context) {
+	code := c.Query("codigo")
 
-	code := c.Param("codigo")
+	if code == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "The 'codigo' parameter is required"})
+		return
+	}
 
-	err := h.companyService.DeleteCompanyByCodigo(code)
+	var deletedCompany models.Empresa
+	err := h.companyService.DeleteCompanyByCodigo(code, &deletedCompany)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete company"})
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Company not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete company", "details": err.Error()})
+		}
 		return
 	}
 
