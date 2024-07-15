@@ -1,15 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tonnarruda/ponto_api_go/config"
 	"github.com/tonnarruda/ponto_api_go/db"
-	"github.com/tonnarruda/ponto_api_go/handlers"
-	"github.com/tonnarruda/ponto_api_go/repositories"
-	"github.com/tonnarruda/ponto_api_go/services"
+	"github.com/tonnarruda/ponto_api_go/routes"
 )
 
 func main() {
@@ -24,29 +21,11 @@ func main() {
 	}
 	defer database.Close()
 
-	router := setupRouter(database)
-
-	log.Fatal(router.Run(":8080"))
-}
-
-func setupRouter(db *sql.DB) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+	routes.SetupCompanyRoutes(router, database)
 
-	companyRepo := repositories.NewCompanyRepository(db)
-	companyService := services.NewCompanyService(companyRepo)
-	companyHandler := handlers.NewCompanyHandler(companyService)
-
-	// Rotas da API
-	router.POST("/empresa", companyHandler.CreateCompanyHandler)
-
-	router.PUT("/empresa", companyHandler.UpdateCompany)
-
-	router.GET("/empresas", companyHandler.GetAllCompaniesHandler)
-	router.GET("/empresa/:codigo", companyHandler.GetCompanyByCodigoHandler)
-	router.DELETE("/empresa", companyHandler.DeleteCompanyByCodigoHandler)
-
-	return router
+	log.Fatal(router.Run(":8080"))
 }
