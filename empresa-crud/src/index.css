@@ -1,0 +1,106 @@
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  /* Estilos para o formulário de empresa */
+  .company-form {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .company-form input[type='text'],
+  .company-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .company-form button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .company-form button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Estilos para a lista de empresas */
+  .company-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .company-list li {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .company-list li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .company-list li .edit-btn,
+  .company-list li .delete-btn {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 5px;
+  }
+  
+  .company-list li .edit-btn:hover,
+  .company-list li .delete-btn:hover {
+    background-color: #45a049;
+  }
+  
+  /* Estilos para o formulário de edição */
+  .company-edit-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .company-edit-form input[type='text'],
+  .company-edit-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .company-edit-form button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .company-edit-form button:hover {
+    background-color: #45a049;
+  }
+  
