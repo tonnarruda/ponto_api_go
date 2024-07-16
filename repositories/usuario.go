@@ -31,3 +31,46 @@ func (r *UserRepository) Create(user *structs.Usuario) error {
 	}
 	return nil
 }
+
+func (r *UserRepository) GetAll() ([]structs.UserResponse, error) {
+	query := `SELECT id, Codigo
+			FROM USUARIO`
+	rows, err := r.db.Query(query)
+	if err != nil {
+		log.Printf("Failed to fetch companies from database: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []structs.UserResponse
+	for rows.Next() {
+		var user structs.UserResponse
+		err := rows.Scan(&user.ID, &user.Codigo)
+		if err != nil {
+			log.Printf("Failed to scan company: %v", err)
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (r *UserRepository) GetByCodigo(codigo string) (*structs.UserResponse, error) {
+	query := `SELECT id, codigo 
+			FROM USUARIO 
+			WHERE codigo = $1`
+	row := r.db.QueryRow(query, codigo)
+
+	var user structs.UserResponse
+	err := row.Scan(&user.ID, &user.Codigo)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil // Empresa não encontrada
+		}
+		log.Printf("Failed to fetch user by code: %v", err)
+		return nil, err
+	}
+
+	return &user, nil
+}

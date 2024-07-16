@@ -17,5 +17,7 @@ func SetupUserRoutes(router *gin.Engine, db *sql.DB) {
 	userRouter := router.Group("/usuario")
 	{
 		userRouter.POST("", userHandler.CreateUserHandler)
+		userRouter.GET("", userHandler.GetAllUsersHandler)
+		userRouter.GET("/:codigo", userHandler.GetUserByCodigoHandler)
 	}
 }

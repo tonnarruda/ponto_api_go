@@ -21,3 +21,11 @@ func (s *UserService) CreateUser(user *structs.Usuario) error {
 
 	return nil
 }
+
+func (s *UserService) GetAllUsers() ([]structs.UserResponse, error) {
+	return s.userRepository.GetAll()
+}
+
+func (s *UserService) GetUserByCodigo(codigo string) (*structs.UserResponse, error) {
+	return s.userRepository.GetByCodigo(codigo)
+}

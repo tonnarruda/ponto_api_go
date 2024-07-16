@@ -11,3 +11,8 @@ type Usuario struct {
 	UserRegistrationDate time.Time `json:"user_registration_date"`
 	LimiteEpgData        time.Time `json:"limite_epg_data"`
 }
+
+type UserResponse struct {
+	ID     string `json:"id"`
+	Codigo string `json:"codigo"`
+}
