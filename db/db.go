@@ -12,36 +12,61 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// SetupDatabase configura a conexão com o banco de dados PostgreSQL e executa migrações.
 func SetupDatabase() (*sql.DB, error) {
-	// Connect to PostgreSQL database
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	// Obter a URL do banco de dados
+	databaseURL := os.Getenv("DATABASE_URL")
+	if databaseURL == "" {
+		return nil, fmt.Errorf("DATABASE_URL not set in environment variables")
+	}
+
+	// Abrir conexão com o banco de dados
+	db, err := openDatabase(databaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 
-	// Check if the connection is active
-	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("failed to ping database: %v", err)
-	}
-
-	// Get absolute path for migrations directory
-	migrationsPath, err := filepath.Abs("db/migrations")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get absolute path for migrations: %v", err)
-	}
-
-	// Print migrations directory path
-	fmt.Printf("Migrations directory path: %s\n", migrationsPath)
-
-	// Migrate database
-	m, err := migrate.New("file://"+migrationsPath, os.Getenv("DATABASE_URL"))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create migrate instance: %v", err)
-	}
-
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	// Executar migrações
+	if err := runMigrations(databaseURL); err != nil {
 		return nil, fmt.Errorf("failed to apply migrations: %v", err)
 	}
 
 	return db, nil
+}
+
+// openDatabase abre uma conexão com o banco de dados PostgreSQL.
+func openDatabase(databaseURL string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", databaseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	return db, nil
+}
+
+// runMigrations executa as migrações do banco de dados.
+func runMigrations(databaseURL string) error {
+	// Obter caminho absoluto para o diretório de migrações
+	migrationsPath, err := filepath.Abs("db/migrations")
+	if err != nil {
+		return err
+	}
+
+	// Criar instância do migrator apontando para o diretório de migrações
+	m, err := migrate.New("file://"+migrationsPath, databaseURL)
+	if err != nil {
+		return err
+	}
+
+	// Executar migrações pendentes
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		return err
+	}
+
+	return nil
 }
