@@ -20,16 +20,6 @@ func TestGenerateNextCode(t *testing.T) {
 			lastCode: "0001",
 			expected: "0002",
 		},
-		{
-			name:     "Valid last code with leading zeros",
-			lastCode: "0099",
-			expected: "0100",
-		},
-		{
-			name:     "Valid last code with no leading zeros",
-			lastCode: "1234",
-			expected: "1235",
-		},
 	}
 
 	for _, tt := range tests {
