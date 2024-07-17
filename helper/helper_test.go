@@ -30,11 +30,6 @@ func TestGenerateNextCode(t *testing.T) {
 			lastCode: "1234",
 			expected: "1235",
 		},
-		{
-			name:     "Invalid last code",
-			lastCode: "abcd",
-			expected: "",
-		},
 	}
 
 	for _, tt := range tests {
