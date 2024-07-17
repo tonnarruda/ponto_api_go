@@ -111,8 +111,7 @@ func (h *CompanyHandler) DeleteCompanyByCodigoHandler(c *gin.Context) {
 		return
 	}
 
-	var deletedCompany structs.Empresa
-	err := h.companyService.DeleteCompanyByCodigo(code, &deletedCompany)
+	err := h.companyService.DeleteCompanyByCodigo(code)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Company not found"})

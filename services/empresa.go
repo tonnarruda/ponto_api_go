@@ -30,8 +30,8 @@ func (s *CompanyService) GetCompanyByCodigo(codigo string) (*structs.Empresa, er
 	return s.companyRepository.GetByCodigo(codigo)
 }
 
-func (s *CompanyService) DeleteCompanyByCodigo(codigo string, company *structs.Empresa) error {
-	return s.companyRepository.DeleteByCodigo(codigo, company)
+func (s *CompanyService) DeleteCompanyByCodigo(codigo string) error {
+	return s.companyRepository.DeleteByCodigo(codigo)
 }
 
 func (s *CompanyService) DeleteAllCompanies() error {

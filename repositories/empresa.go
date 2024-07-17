@@ -16,6 +16,14 @@ func NewCompanyRepository(db *sql.DB) *CompanyRepository {
 	return &CompanyRepository{db: db}
 }
 
+func (r *CompanyRepository) handleError(err error, msg string) error {
+	if err != nil {
+		log.Printf("%s: %v", msg, err)
+		return err
+	}
+	return nil
+}
+
 func (r *CompanyRepository) Create(company *structs.Empresa) error {
 	query := `
 		INSERT INTO EMPRESA (
@@ -33,11 +41,7 @@ func (r *CompanyRepository) Create(company *structs.Empresa) error {
 	_, err := r.db.Exec(query, company.Codigo, company.Nome, company.RazaoSocial, company.CNPJBase, company.USUCodigo, company.ConvertTipoHe,
 		company.CPF, company.DataEncerramento, company.UltimaAtualizacaoAC, company.FaltaAjustarNoAC, company.AderiuESocial, company.DataAdesaoESocial,
 		company.DataAdesaoESocialF2, company.TpAmbESocial, company.StatusEnvioApp, company.NomeFantasia, company.CNPJLicenciado, company.FreemiumLastUpdate)
-	if err != nil {
-		log.Printf("Failed to insert company into database: %v", err)
-		return err
-	}
-	return nil
+	return r.handleError(err, "Failed to insert company into database")
 }
 
 func (r *CompanyRepository) UpdateByCodigo(codigo string, company *structs.Empresa) error {
@@ -56,11 +60,7 @@ func (r *CompanyRepository) UpdateByCodigo(codigo string, company *structs.Empre
 	_, err := r.db.Exec(query, company.Nome, company.RazaoSocial, company.CNPJBase, company.USUCodigo, company.ConvertTipoHe,
 		company.CPF, company.DataEncerramento, company.UltimaAtualizacaoAC, company.FaltaAjustarNoAC, company.AderiuESocial, company.DataAdesaoESocial,
 		company.DataAdesaoESocialF2, company.TpAmbESocial, company.StatusEnvioApp, company.NomeFantasia, company.CNPJLicenciado, company.FreemiumLastUpdate, codigo)
-	if err != nil {
-		log.Printf("Failed to update company in database: %v", err)
-		return err
-	}
-	return nil
+	return r.handleError(err, "Failed to update company in database")
 }
 
 func (r *CompanyRepository) GetAll() ([]structs.Empresa, error) {
@@ -72,8 +72,7 @@ func (r *CompanyRepository) GetAll() ([]structs.Empresa, error) {
 			FROM EMPRESA`
 	rows, err := r.db.Query(query)
 	if err != nil {
-		log.Printf("Failed to fetch companies from database: %v", err)
-		return nil, err
+		return nil, r.handleError(err, "Failed to fetch companies from database")
 	}
 	defer rows.Close()
 
@@ -84,8 +83,7 @@ func (r *CompanyRepository) GetAll() ([]structs.Empresa, error) {
 			&company.CPF, &company.DataEncerramento, &company.UltimaAtualizacaoAC, &company.FaltaAjustarNoAC, &company.AderiuESocial, &company.DataAdesaoESocial,
 			&company.DataAdesaoESocialF2, &company.TpAmbESocial, &company.StatusEnvioApp, &company.NomeFantasia, &company.CNPJLicenciado, &company.FreemiumLastUpdate)
 		if err != nil {
-			log.Printf("Failed to scan company: %v", err)
-			return nil, err
+			return nil, r.handleError(err, "Failed to scan company")
 		}
 		companies = append(companies, company)
 	}
@@ -111,33 +109,22 @@ func (r *CompanyRepository) GetByCodigo(codigo string) (*structs.Empresa, error)
 		if err == sql.ErrNoRows {
 			return nil, nil // Empresa não encontrada
 		}
-		log.Printf("Failed to fetch company by code: %v", err)
-		return nil, err
+		return nil, r.handleError(err, "Failed to fetch company by code")
 	}
 
 	return &company, nil
 }
 
-func (r *CompanyRepository) DeleteByCodigo(codigo string, company *structs.Empresa) error {
+func (r *CompanyRepository) DeleteByCodigo(codigo string) error {
 	query := `DELETE FROM EMPRESA WHERE Codigo = $1`
 	_, err := r.db.Exec(query, codigo)
-	if err != nil {
-		log.Printf("Failed to delete company by code: %v", err)
-		return err
-	}
-
-	return nil
+	return r.handleError(err, "Failed to delete company by code")
 }
 
 func (r *CompanyRepository) DeleteAll() error {
 	query := `DELETE FROM EMPRESA`
 	_, err := r.db.Exec(query)
-	if err != nil {
-		log.Println("Failed to delete company", err)
-		return err
-	}
-
-	return nil
+	return r.handleError(err, "Failed to delete all companies")
 }
 
 func (r *CompanyRepository) GetLastCompanyCode() (string, error) {
@@ -145,7 +132,7 @@ func (r *CompanyRepository) GetLastCompanyCode() (string, error) {
 	query := `SELECT codigo FROM empresa ORDER BY codigo DESC LIMIT 1`
 	err := r.db.QueryRow(query).Scan(&lastCode)
 	if err != nil {
-		return "", err
+		return "", r.handleError(err, "Failed to fetch last company code")
 	}
 	return lastCode, nil
 }
