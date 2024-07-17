@@ -33,11 +33,11 @@ func (r *UserRepository) Create(user *structs.Usuario) error {
 }
 
 func (r *UserRepository) GetAll() ([]structs.UserResponse, error) {
-	query := `SELECT id, Codigo
+	query := `SELECT id, codigo
 			FROM USUARIO`
 	rows, err := r.db.Query(query)
 	if err != nil {
-		log.Printf("Failed to fetch companies from database: %v", err)
+		log.Printf("Failed to fetch users from database: %v", err)
 		return nil, err
 	}
 	defer rows.Close()
