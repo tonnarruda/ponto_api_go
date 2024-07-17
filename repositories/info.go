@@ -7,6 +7,10 @@ import (
 	"github.com/tonnarruda/ponto_api_go/structs"
 )
 
+type InfoRepositoryInterface interface {
+	GetAll() ([]structs.Info, error)
+}
+
 type InfoRepository struct {
 	db *sql.DB
 }
@@ -39,3 +43,6 @@ func (r *InfoRepository) GetAll() ([]structs.Info, error) {
 
 	return infos, nil
 }
+
+// Certifique-se de que InfoRepository implementa a interface
+var _ InfoRepositoryInterface = &InfoRepository{}

@@ -6,10 +6,10 @@ import (
 )
 
 type InfoService struct {
-	infoRepository *repositories.InfoRepository
+	infoRepository repositories.InfoRepositoryInterface
 }
 
-func NewInfoService(infoRepo *repositories.InfoRepository) *InfoService {
+func NewInfoService(infoRepo repositories.InfoRepositoryInterface) *InfoService {
 	return &InfoService{infoRepository: infoRepo}
 }
 
