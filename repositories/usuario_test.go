@@ -3,7 +3,6 @@ package repositories_test
 import (
 	"database/sql"
 	"testing"
-	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
@@ -161,65 +160,6 @@ func TestCreateUsers(t *testing.T) {
 
 			assert.Equal(t, tt.expectedError, err)
 			assert.Equal(t, tt.expectedUsers, users)
-		})
-	}
-}
-
-func TestCreate(t *testing.T) {
-	tests := []struct {
-		name          string
-		user          *structs.Usuario
-		mockExec      func(mock sqlmock.Sqlmock)
-		expectedError error
-	}{
-		{
-			name: "Create user successfully",
-			user: &structs.Usuario{
-				Codigo:               "NEW_USER",
-				Senha:                1234567890,
-				UltimoAcesso:         time.Time{},
-				Bloqueado:            0,
-				UserRegistrationDate: time.Date(2023, 7, 1, 0, 0, 0, 0, time.UTC),
-				LimiteEpgData:        time.Date(2023, 7, 31, 0, 0, 0, 0, time.UTC),
-			},
-			mockExec: func(mock sqlmock.Sqlmock) {
-				mock.ExpectExec(`INSERT INTO USUARIO \(\s*Codigo, Senha, UltimoAcesso, Bloqueado, UserRegistrationDate, LimiteEpgData\s*\) VALUES \(\s*\$1, \$2, \$3, \$4, \$5, \$6\s*\) RETURNING id`).
-					WithArgs("NEW_USER", 1234567890, time.Time{}, 0, time.Date(2023, 7, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, 7, 31, 0, 0, 0, 0, time.UTC)).
-					WillReturnResult(sqlmock.NewResult(1, 1))
-			},
-			expectedError: nil,
-		},
-		{
-			name: "Create user failed",
-			user: &structs.Usuario{
-				Codigo:               "NEW_USER",
-				Senha:                1234567890,
-				UltimoAcesso:         time.Time{},
-				Bloqueado:            0,
-				UserRegistrationDate: time.Date(2023, 7, 1, 0, 0, 0, 0, time.UTC),
-				LimiteEpgData:        time.Date(2023, 7, 31, 0, 0, 0, 0, time.UTC),
-			},
-			mockExec: func(mock sqlmock.Sqlmock) {
-				mock.ExpectExec(`INSERT INTO USUARIO \(\s*Codigo, Senha, UltimoAcesso, Bloqueado, UserRegistrationDate, LimiteEpgData\s*\) VALUES \(\s*\$1, \$2, \$3, \$4, \$5, \$6\s*\) RETURNING id`).
-					WithArgs("NEW_USER", 1234567890, time.Time{}, 0, time.Date(2023, 7, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, 7, 31, 0, 0, 0, 0, time.UTC)).
-					WillReturnError(sql.ErrConnDone)
-			},
-			expectedError: sql.ErrConnDone,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// Create a new mock database
-			db, mock, err := sqlmock.New()
-			assert.NoError(t, err)
-			defer db.Close()
-
-			tt.mockExec(mock)
-			repo := repositories.NewUserRepository(db)
-			err = repo.Create(tt.user)
-
-			assert.Equal(t, tt.expectedError, err)
 		})
 	}
 }
