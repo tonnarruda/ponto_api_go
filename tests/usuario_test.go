@@ -17,7 +17,7 @@ func TestPostAprovaAbono(t *testing.T) {
 		{
 			description:  "Buscar Usuarios com Sucesso",
 			expected:     http.StatusOK,
-			expectedDesc: "Codigo",
+			expectedDesc: "codigo",
 		},
 	}
 
