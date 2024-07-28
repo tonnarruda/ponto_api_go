@@ -99,7 +99,6 @@ func TestGetAll(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Create a new mock database
 			db, mock, err := sqlmock.New()
 			assert.NoError(t, err)
 			defer db.Close()
