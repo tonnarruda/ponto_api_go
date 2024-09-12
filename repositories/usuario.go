@@ -66,7 +66,7 @@ func (r *UserRepository) GetByCodigo(codigo string) (*structs.UserResponse, erro
 	err := row.Scan(&user.ID, &user.Codigo)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil // Empresa não encontrada
+			return nil, nil
 		}
 		log.Printf("Failed to fetch user by code: %v", err)
 		return nil, err
