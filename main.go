@@ -2,35 +2,28 @@ package main
 
 import (
 	"log"
+	"strconv"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/tonnarruda/ponto_api_go/config"
-	"github.com/tonnarruda/ponto_api_go/db"
-	"github.com/tonnarruda/ponto_api_go/routes"
+	"github.com/tonnarruda/ponto_api_go/services"
 )
 
-// Teste
 func main() {
-	err := config.LoadEnv()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	database, err := db.SetupDatabase()
-	if err != nil {
-		log.Fatal("Failed to set up database:", err)
-	}
-	defer database.Close()
-
 	router := gin.Default()
-	router.Use(cors.Default())
 
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
-	routes.SetupCompanyRoutes(router, database)
-	routes.SetupInfoRoutes(router, database)
-	routes.SetupUserRoutes(router, database)
+	router.GET("/cnh/pode-tirar", func(c *gin.Context) {
+		idadeStr := c.Query("idade")
+		if idadeStr == "" {
+			c.JSON(400, gin.H{"error": "idade é obrigatória"})
+			return
+		}
+		idade, err := strconv.Atoi(idadeStr)
+		if err != nil || idade < 0 {
+			c.JSON(400, gin.H{"error": "idade inválida"})
+			return
+		}
+		c.JSON(200, gin.H{"pode_tirar": services.PodeTirarCNH(idade)})
+	})
 
 	log.Fatal(router.Run(":8080"))
 }
