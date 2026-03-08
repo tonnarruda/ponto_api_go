@@ -10,6 +10,7 @@ import (
 	"github.com/tonnarruda/ponto_api_go/routes"
 )
 
+// Teste
 func main() {
 	err := config.LoadEnv()
 	if err != nil {
