@@ -31,7 +31,6 @@ func TestGetUsuarios(t *testing.T) {
 			assert.NoError(t, err, "Erro ao fazer a requisição para %s", tc.description)
 			assert.Equal(t, tc.expected, resp.StatusCode(), "Status de resposta inesperado para %s", tc.description)
 
-			// Validar o contrato da resposta
 			var usuarios []map[string]interface{}
 			err = json.Unmarshal(resp.Body(), &usuarios)
 			assert.NoError(t, err, "Erro ao deserializar resposta para %s", tc.description)
