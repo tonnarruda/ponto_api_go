@@ -45,6 +45,17 @@ func TestGetByCodigo(t *testing.T) {
 			expectedError: nil,
 			expectedUser:  nil,
 		},
+		{
+			name: "NoRows2",
+			code: "12322245",
+			mockQuery: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery(`SELECT id, codigo FROM USUARIO WHERE codigo = \$1`).
+					WithArgs("12345").
+					WillReturnError(sql.ErrNoRows)
+			},
+			expectedError: nil,
+			expectedUser:  nil,
+		},
 	}
 
 	for _, tt := range tests {
