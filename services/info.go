@@ -13,6 +13,7 @@ func NewInfoService(infoRepo *repositories.InfoRepository) *InfoService {
 	return &InfoService{infoRepository: infoRepo}
 }
 
+// Teste Aqui fiz nada novo
 func (s *InfoService) GetAllInfo() ([]structs.Info, error) {
 	return s.infoRepository.GetAll()
 }
