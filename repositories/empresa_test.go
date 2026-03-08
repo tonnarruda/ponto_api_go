@@ -18,7 +18,6 @@ type TestCase struct {
 	expectedErr error
 }
 
-// Helper function to create a sample company
 func getSampleCompany() *structs.Empresa {
 	return &structs.Empresa{
 		Codigo:              "123",
